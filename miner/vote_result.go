@@ -4,7 +4,6 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"fmt"
 	"github.com/ethereum/go-ethereum/core"
-	"strconv"
 )
 
 //type VoteContent struct {
@@ -14,7 +13,7 @@ import (
 //	Num int64
 //}
 
-//每n块获取计票
+//每n块获取计票,第n块整除块获取统计
 func GetWitNessResult(n int, currentBlock *types.Block, currentChain *core.BlockChain) (uint64) {
 	//当前区块高度与n的同余
 
@@ -25,8 +24,8 @@ func GetWitNessResult(n int, currentBlock *types.Block, currentChain *core.Block
 	voten := 0  //总交易数
 	totalNum := make(map[int]int)
 	totalNum[0] = 0
-	if hm % uint64(n) == 0  && hm != 0{
-		for i:=0;i<10 ;i++  {
+	if (currentBlock.Number().Uint64()+1) % uint64(n) == 0  && hm != 0{
+		for i:=0;i<n ;i++  {
 			//得到块
 			block := currentChain.GetBlockByNumber(hm)
 			//得到块交易数据
@@ -36,21 +35,23 @@ func GetWitNessResult(n int, currentBlock *types.Block, currentChain *core.Block
 				for _,v := range transactions{
 					//if v.GetTranType() == ethapi.TransactionType0 {
 					//取交易随机数结果
-					index,err := strconv.Atoi(string(v.Data()))
-					if err != nil {
-						fmt.Println("votetotal error")
-					} else {
-						//得到所有投票
-						//totalVote = append(totalVote,VoteContent{v.GetAddress(),int64(index)})
-						totalNum[index] = totalNum[index]+1
-						//}
-					}
+				//	index,err := strconv.Atoi(string(v.Data()))
+					//if err != nil {
+					//	fmt.Println("votetotal error")
+					//} else {
+					//	//得到所有投票
+					//	//totalVote = append(totalVote,VoteContent{v.GetAddress(),int64(index)})
+					//	totalNum[index] = totalNum[index]+1
+					//	//}
+					//}
 					voten++
-
+					fmt.Println(v)
 
 				}
 			}
-
+			if hm == 0 {
+				break
+			}
 			//遍历递减
 			hm--
 		}
