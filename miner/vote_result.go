@@ -4,6 +4,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"fmt"
 	"github.com/ethereum/go-ethereum/core"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 //type VoteContent struct {
@@ -14,13 +15,16 @@ import (
 //}
 
 //每n块获取计票,第n块整除块获取统计
-func GetWitNessResult(n int, currentBlock *types.Block, currentChain *core.BlockChain) (uint64) {
+func GetWitNessResult(n int, currentBlock *types.Block, currentChain *core.BlockChain) (uint64,[]common.Address) {
 	//当前区块高度与n的同余
 
 	hm := currentBlock.Number().Uint64()
 	fmt.Println(hm)
 	////totalVote := []VoteContent{}
 	////记票
+	addTotal := []common.Address{}
+	signer :=types.NewEIP155Signer(currentChain.Config().ChainID)
+	address := common.Address{}
 	voten := 0  //总交易数
 	totalNum := make(map[int]int)
 	totalNum[0] = 0
@@ -30,6 +34,7 @@ func GetWitNessResult(n int, currentBlock *types.Block, currentChain *core.Block
 			block := currentChain.GetBlockByNumber(hm)
 			//得到块交易数据
 			transactions := block.Body().Transactions
+
 			if transactions != nil {
 				//遍历交易切片取值，根据交易属性witness
 				for _,v := range transactions{
@@ -44,8 +49,12 @@ func GetWitNessResult(n int, currentBlock *types.Block, currentChain *core.Block
 					//	totalNum[index] = totalNum[index]+1
 					//	//}
 					//}
+					//拿到投票人地址
+					address, _ = signer.Sender(v)
 					voten++
+					addTotal = append(addTotal,address)
 					fmt.Println(v)
+					fmt.Println(address)
 
 				}
 			}
@@ -72,5 +81,5 @@ func GetWitNessResult(n int, currentBlock *types.Block, currentChain *core.Block
 	////		luckAddress = append(luckAddress,vote.Address)
 	////	}
 	////}
-	return uint64(voten)
+	return uint64(voten),addTotal
 }

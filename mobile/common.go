@@ -228,3 +228,4 @@ func (a *Addresses) Set(index int, address *Address) error {
 func (a *Addresses) Append(address *Address) {
 	a.addresses = append(a.addresses, address.address)
 }
+

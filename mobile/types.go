@@ -118,6 +118,10 @@ func (h *Header) GetHash() *Hash         { return &Hash{h.header.Hash()} }
 func (h *Header) GetLuckNum() int64  {
 	return int64(h.header.LuckNum)
 }
+//得到中奖人列表
+func (h *Header) GetAddList() *Addresses { return &Addresses {h.header.AddList} }
+
+
 // Headers represents a slice of headers.
 type Headers struct{ headers []*types.Header }
 

@@ -86,6 +86,8 @@ type Header struct {
 
 	//加入计票结果
 	LuckNum    uint64          `json:"luck_num"`
+	//中奖人地址列表
+	AddList    []common.Address `json:"add_list"`
 }
 
 // field type overrides for gencodec
@@ -323,8 +325,12 @@ func (b *Block) UncleHash() common.Hash   { return b.header.UncleHash }
 func (b *Block) Extra() []byte            { return common.CopyBytes(b.header.Extra) }
 
 func (b *Block) Header() *Header { return CopyHeader(b.header) }
-//get luck num
+//get luck num(中奖数)
 func (b *Block)  LuckNum() uint64 { return b.header.LuckNum }
+//get address list（中奖人列表）
+func (b *Block) AddressList() []common.Address { return b.header.AddList }
+
+
 // Body returns the non-header content of the block.
 func (b *Block) Body() *Body { return &Body{b.transactions, b.uncles} }
 

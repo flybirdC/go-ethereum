@@ -33,6 +33,8 @@ func (h Header) MarshalJSON() ([]byte, error) {
 		Hash        common.Hash    `json:"hash"`
 		//add lucknum
 		LuckNum     hexutil.Uint64  `json:"lucknum"`
+		//add vote address list
+		AddList     []common.Address `json:"add_list"`
 	}
 	var enc Header
 	enc.ParentHash = h.ParentHash
@@ -53,6 +55,8 @@ func (h Header) MarshalJSON() ([]byte, error) {
 	enc.Hash = h.Hash()
 	//add lucknum
 	enc.LuckNum = hexutil.Uint64(h.LuckNum)
+	//add vote address list
+	enc.AddList = h.AddList
 	return json.Marshal(&enc)
 }
 
@@ -73,7 +77,9 @@ func (h *Header) UnmarshalJSON(input []byte) error {
 		Extra       *hexutil.Bytes  `json:"extraData"        gencodec:"required"`
 		MixDigest   *common.Hash    `json:"mixHash"          gencodec:"required"`
 		Nonce       *BlockNonce     `json:"nonce"            gencodec:"required"`
+		//add vote param
 		LuckNum     hexutil.Uint64  `json:"lucknum"`
+		AddList     []*common.Address `json:"add_list"`
 
 	}
 	var dec Header
@@ -95,7 +101,6 @@ func (h *Header) UnmarshalJSON(input []byte) error {
 	if dec.Root == nil {
 		return errors.New("missing required field 'stateRoot' for Header")
 	}
-	//lucknum
 	h.Root = *dec.Root
 	if dec.TxHash == nil {
 		return errors.New("missing required field 'transactionsRoot' for Header")

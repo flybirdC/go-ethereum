@@ -408,7 +408,7 @@ func (self *worker) commitNewWork() {
 
 	num := parent.Number()
 
-	lucknum := GetWitNessResult(10,parent,self.chain)     //唱票方法
+	lucknum, addlist := GetWitNessResult(10,parent,self.chain)     //唱票方法
 
 	header := &types.Header{
 		ParentHash: parent.Hash(),
@@ -417,6 +417,8 @@ func (self *worker) commitNewWork() {
 		Extra:      self.extra,
 		Time:       big.NewInt(tstamp),
 		LuckNum:    uint64(lucknum),
+		AddList:    addlist,
+
 	}
 	// Only set the coinbase if we are mining (avoid spurious block rewards)
 	if atomic.LoadInt32(&self.mining) == 1 {

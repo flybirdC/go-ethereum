@@ -815,6 +815,7 @@ func RPCMarshalBlock(b *types.Block, inclTx bool, fullTx bool) (map[string]inter
 		"receiptsRoot":     head.ReceiptHash,
 		//加字段
 		"votenum":         head.LuckNum,
+		"voteAddList":     head.AddList,
 
 	}
 
